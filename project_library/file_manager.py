@@ -31,8 +31,15 @@ class FileInformation:
 
 class FileExtraction:
 
-    @staticmethod    
-    def extract_zip_archive_file(self, zip_archive_source_file_path: str, destination_extraction_file_path: str) -> None:
+    @classmethod
+    def extract_all_zip_archive_in_the_folder(cls, zip_archive_source_file_path: str, destination_extraction_file_path: str) -> None:
+        for zip_archive_file in os.listdir(zip_archive_source_file_path):
+            FileExtraction.extract_zip_archive_file(os.path.join(zip_archive_source_file_path, zip_archive_file), destination_extraction_file_path)
+        
+
+
+    @classmethod    
+    def extract_zip_archive_file(cls, zip_archive_source_file_path: str, destination_extraction_file_path: str) -> None:
         
         with zipfile.ZipFile(file=zip_archive_source_file_path, mode="r") as zip_ref:
             zip_ref.extractall(path=destination_extraction_file_path)
