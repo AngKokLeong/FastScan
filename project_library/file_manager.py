@@ -97,7 +97,7 @@ class CreateFolderStructure:
     }
 
     @classmethod
-    def replicate_crack400_folder_structure(cls, root_folder_file_path: str, dataset_folder_name: str) -> tuple[dict, dict, dict]:
+    def create_dataset_folder_structure(cls, root_folder_file_path: str, dataset_folder_name: str) -> tuple[dict, dict, dict]:
 
         train_folder_structure, test_folder_structure, validation_folder_structure = CreateFolderStructure.create_new_dataset_folder(root_folder_file_path=root_folder_file_path, dataset_folder_name=dataset_folder_name)
 
