@@ -26,6 +26,15 @@ class FileInformation:
 
         return file_name_list
 
+    @classmethod
+    def update_list_containing_file_extension_into_list(cls, data_list: list, extension_modification: str) -> list[str]:
+        new_file_information_list: list = []
+
+        for record in data_list:
+            file_information = record.split(".")
+            new_file_information_list.append(file_information[0] + extension_modification)
+        
+        return new_file_information_list
 
         
 
@@ -50,13 +59,13 @@ class FileExtraction:
 
 class MoveFilesAndFolder:
 
+
+
     @classmethod
-    def move_images_to_train_validation_test_folder(cls, source_folder: Path, file_name_list: list[str], destination_folder: Path, dataset_identifier: dict[str]) -> tuple[str, str, str]:
+    def move_images_to_train_validation_test_folder(cls, source_folder: Path, file_name_list: list[str], destination_folder: Path, dataset_identifier: dict[str]) -> tuple[list, list, list]:
 
         if not all(identifier in dataset_identifier for identifier in ["TRAIN", "VALIDATION", "TEST"]):
             raise Exception(f"Please make sure dataset_identifier have the following keys: {["TRAIN", "VALIDATION", "TEST"]}")
-
-
 
         train_dataset_folder_path: str = os.path.join(destination_folder.resolve(), dataset_identifier["TRAIN"]) 
         validation_dataset_folder_path: str = os.path.join(destination_folder.resolve(), dataset_identifier["VALIDATION"])
@@ -69,17 +78,25 @@ class MoveFilesAndFolder:
         MoveFilesAndFolder.move_files_to_another_folder(source_folder=source_folder, file_name_list=validation_dataset, destination_folder=validation_dataset_folder_path)
         MoveFilesAndFolder.move_files_to_another_folder(source_folder=source_folder, file_name_list=test_dataset, destination_folder=test_dataset_folder_path)
 
-        return train_dataset_folder_path, validation_dataset_folder_path, test_dataset_folder_path
+        print(f"Train dataset is at {train_dataset_folder_path}")
+        print(f"Validation dataset is at {validation_dataset_folder_path}")
+        print(f"Test Dataset is at {test_dataset_folder_path}")
+
+
+        return train_dataset, validation_dataset, test_dataset
         
 
     @classmethod
-    def move_files_to_another_folder(cls, source_folder: Path, file_name_list: list[str], destination_folder: Path) -> None:
+    def move_files_to_another_folder(cls, source_folder: Path, file_name_list: list[str], destination_folder: Path) -> list:
         
+        files_in_source_folder: list = os.listdir(os.path.join(source_folder))
+        files_not_found_in_folder: list = []
         for file_name in file_name_list:
-
-            shutil.copyfile(src=os.path.join(source_folder, file_name), dst=os.path.join(destination_folder, file_name), follow_symlinks=False)
-
-        return None
+            if file_name in files_in_source_folder:
+                shutil.copyfile(src=os.path.join(source_folder, file_name), dst=os.path.join(destination_folder, file_name), follow_symlinks=False)
+            else:
+                files_not_found_in_folder.append(file_name)
+        return files_not_found_in_folder
 
 #need to create sub folder "mydata" to contain all images that are captured from the 3 minute recorded video
 
