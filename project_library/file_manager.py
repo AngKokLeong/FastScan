@@ -65,7 +65,7 @@ class MoveFilesAndFolder:
     def move_images_to_train_validation_test_folder(cls, source_folder: Path, file_name_list: list[str], destination_folder: Path, dataset_identifier: dict[str]) -> tuple[list, list, list]:
 
         if not all(identifier in dataset_identifier for identifier in ["TRAIN", "VALIDATION", "TEST"]):
-            raise Exception(f"Please make sure dataset_identifier have the following keys: {["TRAIN", "VALIDATION", "TEST"]}")
+            raise Exception(f"Please make sure dataset_identifier have the following keys: {[ 'TRAIN', 'VALIDATION', 'TEST']}")
 
         train_dataset_folder_path: str = os.path.join(destination_folder.resolve(), dataset_identifier["TRAIN"]) 
         validation_dataset_folder_path: str = os.path.join(destination_folder.resolve(), dataset_identifier["VALIDATION"])
