@@ -1,7 +1,6 @@
 import zipfile
 import os
 import numpy
-import cv2
 from pathlib import Path
 import shutil
 import project_library.dataset_processor
