@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 import shutil
 from ultralytics import settings
-import project_library.file_manager
+import file_manager
 
 def train_yolo(pretrained_model_path: str, dataset_yaml_file_path: str, epochs: int = 10, learning_rate: float = 0.001, batch_size: int = 32) -> tuple[YOLO, dict]:
     fastscan_yolo_model: YOLO = YOLO(pretrained_model_path)
@@ -100,9 +100,9 @@ if __name__ =='__main__':
 # https://github.com/ultralytics/ultralytics/issues/3527 (Solution to move runs folder to another folder location)
 
     try:
-        dataset_folder_location: str = project_library.file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/")
-        yolov11n_file_path: str = project_library.file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/yolo11n.pt")
-        fastscan_dataset_yaml_path: str = project_library.file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/fastscandataset.yaml")
+        dataset_folder_location: str = file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/")
+        yolov11n_file_path: str = file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/yolo11n.pt")
+        fastscan_dataset_yaml_path: str = file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/fastscandataset.yaml")
 
 
         hyperparameters = json.loads(os.environ["SM_HPS"])
@@ -133,6 +133,6 @@ if __name__ =='__main__':
 
     except Exception as ex:
         # /opt/ml/output/failure to write a file describing the failure reasons for this training
-        with open("/opt/ml/output/failure/error.txt", "w") as textfile:
+        with open("/opt/ml/output/failure/error.txt", "x") as textfile:
             textfile.write(ex)
 
