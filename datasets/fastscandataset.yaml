@@ -1,0 +1,14 @@
+# parent folder
+# ├── opt/ml/input/data/training
+# └── images
+#     └──train
+
+path:   /opt/ml/input/data/training    # dataset root dir
+train:  images/train                                            # train images (relative to 'path')  
+val:    images/val                                               # val images (relative to 'path')  
+test:   images/test                                             # test images (optional, relative to 'path') 
+
+# Classes
+names:
+  0: wrigley_I001
+  1: hichew_grape_I002
