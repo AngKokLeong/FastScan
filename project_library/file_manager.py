@@ -1,7 +1,6 @@
 import zipfile
 import os
 import numpy
-import cv2
 from pathlib import Path
 import shutil
 import project_library.dataset_processor
@@ -65,7 +64,7 @@ class MoveFilesAndFolder:
     def move_images_to_train_validation_test_folder(cls, source_folder: Path, file_name_list: list[str], destination_folder: Path, dataset_identifier: dict[str]) -> tuple[list, list, list]:
 
         if not all(identifier in dataset_identifier for identifier in ["TRAIN", "VALIDATION", "TEST"]):
-            raise Exception(f"Please make sure dataset_identifier have the following keys: {["TRAIN", "VALIDATION", "TEST"]}")
+            raise Exception(f"Please make sure dataset_identifier have the following keys: {[ 'TRAIN', 'VALIDATION', 'TEST']}")
 
         train_dataset_folder_path: str = os.path.join(destination_folder.resolve(), dataset_identifier["TRAIN"]) 
         validation_dataset_folder_path: str = os.path.join(destination_folder.resolve(), dataset_identifier["VALIDATION"])
@@ -121,9 +120,9 @@ class CreateFolderStructure:
     }
 
     @classmethod
-    def create_dataset_folder_structure(cls, root_folder_file_path: str, dataset_folder_name: str) -> tuple[dict, dict, dict]:
+    def create_dataset_folder_structure(cls, root_folder_file_path: str, dataset_folder_name: str) -> tuple[dict, dict, dict, dict]:
 
-        train_folder_structure, test_folder_structure, validation_folder_structure = CreateFolderStructure.create_new_dataset_folder(root_folder_file_path=root_folder_file_path, dataset_folder_name=dataset_folder_name)
+        images_folder_structure, labels_folder_structure, raw_folder_structure = CreateFolderStructure.create_new_dataset_folder(root_folder_file_path=root_folder_file_path, dataset_folder_name=dataset_folder_name)
 
         raw_folder_path: str = os.path.join(root_folder_file_path, dataset_folder_name, CreateFolderStructure.RAW)
 
@@ -131,11 +130,12 @@ class CreateFolderStructure:
         test_background_folder_path: str = CreateFolderStructure.create_folder(folder_name="test_background", folder_file_path=raw_folder_path)
         validation_background_folder_path: str = CreateFolderStructure.create_folder(folder_name="val_background", folder_file_path=raw_folder_path)
 
-        train_folder_structure["train_background"] = train_background_folder_path
-        train_folder_structure["test_background"] = test_background_folder_path
-        train_folder_structure["validation_background"] = validation_background_folder_path
 
-        return train_folder_structure, test_folder_structure, validation_folder_structure
+        raw_folder_structure["train_background"] = train_background_folder_path
+        raw_folder_structure["test_background"] = test_background_folder_path
+        raw_folder_structure["validation_background"] = validation_background_folder_path
+
+        return images_folder_structure, labels_folder_structure, raw_folder_structure
 
 
 
@@ -144,12 +144,12 @@ class CreateFolderStructure:
         
         root_folder_file_path: str = CreateFolderStructure.create_folder(folder_name=dataset_folder_name, folder_file_path=root_folder_file_path)
         
-        train_folder_structure: dict = CreateFolderStructure.create_folder_for_dataset_preparation(root_folder_file_path=root_folder_file_path, folder_name=CreateFolderStructure.IMAGES)
-        test_folder_structure: dict = CreateFolderStructure.create_folder_for_dataset_preparation(root_folder_file_path=root_folder_file_path, folder_name=CreateFolderStructure.LABELS)
-        validation_folder_structure: dict = CreateFolderStructure.create_folder_for_dataset_preparation(root_folder_file_path=root_folder_file_path, folder_name=CreateFolderStructure.RAW)
+        images_folder_structure: dict = CreateFolderStructure.create_folder_for_dataset_preparation(root_folder_file_path=root_folder_file_path, folder_name=CreateFolderStructure.IMAGES)
+        labels_folder_structure: dict = CreateFolderStructure.create_folder_for_dataset_preparation(root_folder_file_path=root_folder_file_path, folder_name=CreateFolderStructure.LABELS)
+        raw_folder_structure: dict = CreateFolderStructure.create_folder_for_dataset_preparation(root_folder_file_path=root_folder_file_path, folder_name=CreateFolderStructure.RAW)
         
 
-        return train_folder_structure, test_folder_structure, validation_folder_structure
+        return images_folder_structure, labels_folder_structure, raw_folder_structure
 
 
 
