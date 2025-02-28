@@ -3,7 +3,7 @@
 # └── images
 #     └──train
 
-path:   /opt/ml/input/data/training    # dataset root dir
+path:   /opt/ml/input/data/train    # dataset root dir
 train:  images/train                                            # train images (relative to 'path')  
 val:    images/val                                               # val images (relative to 'path')  
 test:   images/test                                             # test images (optional, relative to 'path') 
