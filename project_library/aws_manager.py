@@ -41,4 +41,12 @@ class S3:
             return []
 
 
+    @classmethod
+    def download_all_files(cls, bucket_name: str, prefix: str, destination_folder_path: str) -> None:
+
+        s3_file_list: list = S3.list_s3_keys(bucket_name=bucket_name, prefix=prefix)
+
+        for s3_file in s3_file_list:
+            print(f"Processing {s3_file}")
+            cls.s3_client.download_file(bucket_name, s3_file, destination_folder_path)
 
