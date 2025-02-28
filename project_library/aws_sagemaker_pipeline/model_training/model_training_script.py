@@ -1,12 +1,13 @@
 from ultralytics import YOLO
 import argparse
 import os
-import project_library.file_manager
 import json
 from pathlib import Path
 import shutil
+from ultralytics import settings
+import project_library.file_manager
 
-def train_yolo(pretrained_model_path: str, dataset_yaml_file_path: str, run_folder_location: str,  epochs: int = 10, learning_rate: float = 0.001, batch_size: int = 32) -> tuple[YOLO, dict]:
+def train_yolo(pretrained_model_path: str, dataset_yaml_file_path: str, epochs: int = 10, learning_rate: float = 0.001, batch_size: int = 32) -> tuple[YOLO, dict]:
     fastscan_yolo_model: YOLO = YOLO(pretrained_model_path)
 
 
@@ -17,7 +18,7 @@ def train_yolo(pretrained_model_path: str, dataset_yaml_file_path: str, run_fold
         # This criteria is complete because the run folder will be generated in that defined location after the parameter pass into this function
             #  # /opt/ml/output/data for output the runs folder and other processed data to s3
 
-    fastscan_yolov11_training_result: dict = fastscan_yolo_model.train(data=dataset_yaml_file_path, epochs=epochs, lr0=learning_rate, lrf=learning_rate, batch=batch_size, project=run_folder_location)
+    fastscan_yolov11_training_result: dict = fastscan_yolo_model.train(data=dataset_yaml_file_path, epochs=epochs, lr0=learning_rate, lrf=learning_rate, batch=batch_size)
 
     return fastscan_yolo_model, fastscan_yolov11_training_result
 
@@ -43,12 +44,14 @@ if __name__ =='__main__':
     parser.add_argument('--output-data-dir', type=str, default=os.environ['SM_OUTPUT_DATA_DIR'])
     parser.add_argument('--model-dir', type=str, default=os.environ['SM_MODEL_DIR'])
     parser.add_argument('--train', type=str, default=os.environ['SM_CHANNEL_TRAIN'])
-    parser.add_argument('--test', type=str, default=os.environ['SM_CHANNEL_TEST'])
 
     args, _ = parser.parse_known_args()
 
     # ... load from args.train and args.test, train a model, write model to args.model_dir.
 
+
+    settings["runs_dir"] = "/opt/ml/output/runs"
+    settings["datasets_dir"] = "/opt/ml/input/data/train/"
 
 
 
@@ -98,12 +101,9 @@ if __name__ =='__main__':
 
     try:
         dataset_folder_location: str = project_library.file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/")
-        yolov11n_file_path: str = project_library.file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/yolov11n.pt")
+        yolov11n_file_path: str = project_library.file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/yolo11n.pt")
         fastscan_dataset_yaml_path: str = project_library.file_manager.FileInformation.get_absolute_folder_location("/opt/ml/input/data/train/fastscandataset.yaml")
 
-        #Create the folder
-        project_library.file_manager.CreateFolderStructure.create_folder(folder_name="yolo_model_training_result", folder_file_path="/opt/ml/output/data")
-        
 
         hyperparameters = json.loads(os.environ["SM_HPS"])
         epochs: int = int(hyperparameters["epochs"])
@@ -111,7 +111,6 @@ if __name__ =='__main__':
         learning_rate: float = float(hyperparameters["learning-rate"])
 
         trained_yolo_model, trained_yolo_model_result = train_yolo(pretrained_model_path=yolov11n_file_path, dataset_yaml_file_path=fastscan_dataset_yaml_path, 
-                                                                    run_folder_location="/opt/ml/output/data/yolo_model_training_result", 
                                                                     epochs=epochs,
                                                                     batch_size=batch_size,
                                                                     learning_rate=learning_rate)
