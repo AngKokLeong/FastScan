@@ -1,0 +1,15 @@
+artifact_uri: mlflow-artifacts:/711983105179900724/e977be7346a340dbb7fb954d3b224820/artifacts
+end_time: 1740561236406
+entry_point_name: ''
+experiment_id: '711983105179900724'
+lifecycle_stage: active
+run_id: e977be7346a340dbb7fb954d3b224820
+run_name: train10
+run_uuid: e977be7346a340dbb7fb954d3b224820
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1740559402187
+status: 3
+tags: []
+user_id: angko
